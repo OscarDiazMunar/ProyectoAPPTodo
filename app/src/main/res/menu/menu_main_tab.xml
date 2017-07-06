@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.oscar.proyectoapptodo.Presentations.MainTabActivity.implementations.MainTabActivity">
+    <item
+        android:id="@+id/closeSesion"
+        android:orderInCategory="100"
+        android:title="@string/close_sesion"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/clima"
+        android:orderInCategory="100"
+        android:icon="@drawable/weather_icon"
+        android:title="@string/close_sesion"
+        app:showAsAction="ifRoom" />
+</menu>

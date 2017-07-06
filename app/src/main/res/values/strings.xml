@@ -1,0 +1,22 @@
+<resources>
+    <!-- LoginActivity -->
+    <string name="app_name">Proyecto APP Todo</string>
+    <string name="correo_usuario">Correo Usuario</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="registrar">Registrate</string>
+    <string name="inicia_sesion">Inicia Sesión</string>
+
+    <!-- Messages error -->
+    <string name="email_notvalid">Escriba un correo valido</string>
+    <string name="is_Empty">El campo no puede estar vacio</string>
+    <string name="more_six">minimo 6 caracteres</string>
+    <string name="userExist">No se pudo crear el usuario. Ya existe</string>
+    <string name="userError">No se pudo iniciar sesión. Verifique los datos de autenticacion</string>
+    <string name="btnNext">Continuar</string>
+    <string name="cerrarSesion">Se ha cerrado la sesión</string>
+    <string name="title_activity_main_tab">MainTabActivity</string>
+
+    <!-- MainTabActivity -->
+    <string name="close_sesion">Cerrar sesión</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>
