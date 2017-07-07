@@ -21,7 +21,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class MainTabPresenter implements IMainTabPresenter {
     MainTabActivity mainTabActivity;
-    FirebaseAuth auth = FirebaseAuth.getInstance();
+    //FirebaseAuth auth = FirebaseAuth.getInstance();
     EventBus eventBus = EventBus.getDefault();
 
 
@@ -51,7 +51,7 @@ public class MainTabPresenter implements IMainTabPresenter {
 
     @Override
     public void closeSession() {
-        auth.signOut();
+        //auth.signOut();
         Intent intent = new Intent(mainTabActivity, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_NEW_TASK

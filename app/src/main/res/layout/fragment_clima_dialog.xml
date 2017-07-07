@@ -1,19 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="8dp"
-    card_view:cardCornerRadius="20dp"
-    card_view:cardElevation="@dimen/cardview_default_elevation"
+    android:layout_marginBottom="2dp"
+    card_view:cardCornerRadius="30dp"
+    card_view:cardElevation="5dp"
     card_view:contentPadding="20dp"
-    card_view:cardUseCompatPadding="true"
-    >
+    card_view:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="208dp"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtCiudad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.SearchResult.Title"
+            android:textColor="@color/colorAccent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="21dp" />
+
+        <ImageView
+            android:id="@+id/iconWeather"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="27dp"
+            android:layout_below="@+id/txtCiudad"
+            android:layout_toStartOf="@+id/txtTemp" />
+
+        <TextView
+            android:id="@+id/txTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/txtTemp"
+            android:layout_alignTop="@+id/iconWeather"
+            android:layout_marginStart="12dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.SearchResult.Title" />
+
+        <TextView
+            android:id="@+id/txtDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignBottom="@+id/iconWeather"
+            android:layout_alignStart="@+id/txTitle" />
+
+        <TextView
+            android:id="@+id/txtTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iconWeather"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+             />
+
+    </RelativeLayout>
+
 </android.support.v7.widget.CardView>

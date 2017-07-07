@@ -57,7 +57,8 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
     @Subscribe
     public void onEventMainThread(SuccessData event) {
         weather =parseJsonWeather(event.getMessage());
-        climaDialogFragment.setDataWheater(weather.toString());
+        //climaDialogFragment.setDataWheater(weather.toString());
+        climaDialogFragment.setDataWheater(weather);
 
     }
 
@@ -88,3 +89,4 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
         return weather;
     }
 }
+//3222011335

@@ -19,4 +19,7 @@
     <!-- MainTabActivity -->
     <string name="close_sesion">Cerrar sesión</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- ClimaDialogFragment -->
+    <string name="dialogFragment_ciudad">El clima de tu ciudad %1$s</string>
 </resources>

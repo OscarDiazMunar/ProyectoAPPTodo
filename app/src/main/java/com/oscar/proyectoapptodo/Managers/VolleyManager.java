@@ -40,12 +40,14 @@ public final class VolleyManager {
                         setSuccessData(response.toString());
                     }
                 },
+
                 new Response.ErrorListener() {
+
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("VolleyManagererro", "error");
                         setErrorData(error.getMessage());
-                                            }
+                    }
                 }
 
                 ) {
@@ -68,6 +70,52 @@ public final class VolleyManager {
         return jsonObjectRequest;
 
     }
+
+    //Objeto json
+    public static JsonObjectRequest makeRequestJsonPOST(String url, JSONObject jsonData){
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonData,
+                new Response.Listener<JSONObject>(){
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("VolleyMangerPOST", response.toString());
+                        successData.setType(Constants.successType.SUCCES_LOGIN_CREATE_USER);
+                        successData.setMessage(Constants.succesMessage.successLoginCreateUser);
+                        eventBus.post(successData);
+                    }
+                },
+                new Response.ErrorListener(){
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error login", "massimo");
+
+                        errorData.setType(Constants.errorType.ERROR_LOGIN_CREATE_USER);
+                        errorData.setMessage(error.toString());
+                        eventBus.post(errorData);
+                    }
+                }
+        ){
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                statusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                //headers.put("Accept", "application/json");
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        return jsonObjectRequest;
+
+    }
+
 
     //Objeto xml o json
     public static StringRequest makeRequestString(String url){

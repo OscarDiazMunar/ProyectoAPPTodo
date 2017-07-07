@@ -1,5 +1,7 @@
 package com.oscar.proyectoapptodo.Presentations.MainTabActivity.implementations;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,13 +23,16 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.oscar.proyectoapptodo.AppController;
 import com.oscar.proyectoapptodo.Managers.VolleyManager;
 import com.oscar.proyectoapptodo.Presentations.MainTabActivity.fragments.climaDialogFragment.implementations.ClimaDialogFragment;
 import com.oscar.proyectoapptodo.R;
 import com.oscar.proyectoapptodo.Utils.Constants;
 
-public class MainTabActivity extends AppCompatActivity {
+public class MainTabActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -43,6 +48,8 @@ public class MainTabActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    private GoogleApiClient googleApiClient;
 
 
     private MainTabPresenter mainTabPresenter;
@@ -77,6 +84,12 @@ public class MainTabActivity extends AppCompatActivity {
 
         mainTabPresenter = new MainTabPresenter(this);
         mainTabPresenter.onCreate();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
     }
 
@@ -119,12 +132,28 @@ public class MainTabActivity extends AppCompatActivity {
 
                 /*mainTabPresenter.consumeWebService("http://api.openweathermap.org/data/2.5/weather?q=medellin&appid=072ede38bdcd58804ca961ad3104bae8",
                         Constants.typeResponseWebService.TYPE_XML);*/
+                googleApiClient.connect();
                 new ClimaDialogFragment().show(getFragmentManager(), "ClimaDialog");
                 return true;
             default:
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     /**

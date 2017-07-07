@@ -8,6 +8,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.oscar.proyectoapptodo.AppController;
+import com.oscar.proyectoapptodo.Managers.VolleyManager;
 import com.oscar.proyectoapptodo.Models.ErrorData;
 import com.oscar.proyectoapptodo.Models.SuccessData;
 import com.oscar.proyectoapptodo.Presentations.login.interfaces.ILoginPresenter;
@@ -17,6 +19,8 @@ import com.oscar.proyectoapptodo.Utils.Validator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by daniel on 13/06/2017.
@@ -61,6 +65,10 @@ public class LoginPresenter implements ILoginPresenter {
     public void validateLogin(String email, String password) {
         loginActivity.disableInputs();
         loginActivity.showProgress();
+
+        String url = "https://uphill-leg.000webhostapp.com/proyectoapptodo/usuarios/login";
+        AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(url, construirJsonObject(email, password)));
+        /*
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(loginActivity, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -76,13 +84,18 @@ public class LoginPresenter implements ILoginPresenter {
                     eventBus.post(errorData);
                 }
             }
-        });
+        });*/
     }
 
     @Override
     public void registerNewUser(String email, String password) {
         loginActivity.disableInputs();
         loginActivity.showProgress();
+
+        String url = "https://uphill-leg.000webhostapp.com/proyectoapptodo/usuarios/registro";
+        AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(url, construirJsonObject(email, password)));
+
+        /*
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(loginActivity, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -97,7 +110,7 @@ public class LoginPresenter implements ILoginPresenter {
                 }
 
             }
-        });
+        });*/
     }
 
     @Override
@@ -198,5 +211,20 @@ public class LoginPresenter implements ILoginPresenter {
             isValid = false;
         }
         return isValid;
+    }
+
+    private JSONObject construirJsonObject(String user, String pass){
+        JSONObject jsonData = new JSONObject();
+
+        try {
+            jsonData.put("nombre", user);
+            jsonData.put("contrasena", pass);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.e("eldatajson", jsonData.toString());
+        return  jsonData;
+
     }
 }
