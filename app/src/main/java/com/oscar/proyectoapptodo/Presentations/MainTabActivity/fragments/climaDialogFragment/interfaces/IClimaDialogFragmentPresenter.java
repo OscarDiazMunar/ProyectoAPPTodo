@@ -1,5 +1,8 @@
 package com.oscar.proyectoapptodo.Presentations.MainTabActivity.fragments.climaDialogFragment.interfaces;
 
+import android.location.Location;
+import android.location.LocationManager;
+
 import com.oscar.proyectoapptodo.Models.ErrorData;
 import com.oscar.proyectoapptodo.Models.SuccessData;
 
@@ -13,6 +16,8 @@ public interface IClimaDialogFragmentPresenter {
     void onStart();
     void onStop();
     void onDestroy();
+    void locationStar();
+    Location getLocation();
 
     void onEventMainThread(ErrorData event);
     void onEventMainThread(SuccessData event);
