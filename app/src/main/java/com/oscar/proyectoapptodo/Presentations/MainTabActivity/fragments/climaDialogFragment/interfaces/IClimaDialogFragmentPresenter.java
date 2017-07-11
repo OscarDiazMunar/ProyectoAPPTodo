@@ -17,10 +17,10 @@ public interface IClimaDialogFragmentPresenter {
     void onStop();
     void onDestroy();
     void locationStar();
-    Location getLocation();
 
     void onEventMainThread(ErrorData event);
     void onEventMainThread(SuccessData event);
 
     void consumeWebServiceWeather(String longitud, String latitud);
+    void consumeWebServiceWeather(Double longitud, Double latitud);
 }

@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.oscar.proyectoapptodo.Managers.ImageLoaders.GlideImageLoader;
 import com.oscar.proyectoapptodo.Managers.ImageLoaders.ImageLoader;
 import com.oscar.proyectoapptodo.Models.Weather;
@@ -25,7 +27,7 @@ import butterknife.ButterKnife;
  * Created by daniel on 15/06/2017.
  */
 
-public class ClimaDialogFragment extends DialogFragment implements IClimaDialogFragmentView{
+public class ClimaDialogFragment extends DialogFragment implements IClimaDialogFragmentView {
 
     @Bind(R.id.txTitle)
     TextView txTitle;
@@ -37,6 +39,10 @@ public class ClimaDialogFragment extends DialogFragment implements IClimaDialogF
     TextView txtCiudad;
     @Bind(R.id.iconWeather)
     ImageView iconWeather;
+    @Bind(R.id.txtCoord)
+    TextView txtCoord;
+    @Bind(R.id.progressBarClima)
+    ProgressBar progressBarClima;
 
     private EventBus eventBus = EventBus.getDefault();
     private ClimaDialogFragmentPresenter climaDialogFragmentPresenter;
@@ -53,7 +59,6 @@ public class ClimaDialogFragment extends DialogFragment implements IClimaDialogF
         climaDialogFragmentPresenter = new ClimaDialogFragmentPresenter(this, getContext(), getActivity());
         climaDialogFragmentPresenter.onCreateDialog();
         climaDialogFragmentPresenter.locationStar();
-        setLatitudeLongitude(climaDialogFragmentPresenter.getLocation());
 
         return createClimaDialog();
 
@@ -63,6 +68,7 @@ public class ClimaDialogFragment extends DialogFragment implements IClimaDialogF
     @Override
     public void onStart() {
         super.onStart();
+        climaDialogFragmentPresenter.onStart();
         Log.e("onSart", "fragment");
     }
 
@@ -84,7 +90,6 @@ public class ClimaDialogFragment extends DialogFragment implements IClimaDialogF
         View view = inflater.inflate(R.layout.fragment_clima_dialog, null);
         ButterKnife.bind(this, view);
         climaDialogBuilder.setView(view);
-        climaDialogFragmentPresenter.consumeWebServiceWeather(Double.toString(longitude), Double.toString(latitude));
 
         return climaDialogBuilder.create();
     }
@@ -97,7 +102,6 @@ public class ClimaDialogFragment extends DialogFragment implements IClimaDialogF
 
     @Override
     public void setDataWheater(String message) {
-        //textView.setText(message);
     }
 
     @Override
@@ -115,17 +119,31 @@ public class ClimaDialogFragment extends DialogFragment implements IClimaDialogF
 
         String newTemp = String.format("%.2f °C", tempe);
         txtTemp.setText(newTemp);
+        String msg = "Longitude:%s \n Latitude:%s";
+        msg = String.format(msg, longitude, latitude);
+        txtCoord.setText(msg);
 
-        //txtTemp.setText("longitude: "+Double.toString(longitude)+ "latitude: "+Double.toString(latitude));
     }
 
-    private void setLatitudeLongitude(Location location){
+    @Override
+    public void setLatitudeLongitude(Location location) {
         if (location != null) {
             Log.e("Connected", "aqui estamos");
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            Log.e("latitude", Double.toString(latitude));
-            Log.e("longitud", Double.toString(longitude));
+
+            climaDialogFragmentPresenter.consumeWebServiceWeather(longitude, latitude);
         }
     }
+
+    @Override
+    public void showProgress() {
+        progressBarClima.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBarClima.setVisibility(View.GONE);
+    }
+
 }

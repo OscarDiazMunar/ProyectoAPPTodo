@@ -3,7 +3,7 @@ package com.oscar.proyectoapptodo.Presentations.MainTabActivity.implementations;
 import android.content.Intent;
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.facebook.login.LoginManager;
 import com.oscar.proyectoapptodo.AppController;
 import com.oscar.proyectoapptodo.Managers.VolleyManager;
 import com.oscar.proyectoapptodo.Models.ErrorData;
@@ -52,6 +52,7 @@ public class MainTabPresenter implements IMainTabPresenter {
     @Override
     public void closeSession() {
         //auth.signOut();
+        LoginManager.getInstance().logOut();
         Intent intent = new Intent(mainTabActivity, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_NEW_TASK

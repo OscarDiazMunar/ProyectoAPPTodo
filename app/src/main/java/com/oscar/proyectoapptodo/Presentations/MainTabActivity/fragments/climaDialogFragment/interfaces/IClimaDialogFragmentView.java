@@ -1,5 +1,7 @@
 package com.oscar.proyectoapptodo.Presentations.MainTabActivity.fragments.climaDialogFragment.interfaces;
 
+import android.location.Location;
+
 import com.oscar.proyectoapptodo.Models.Weather;
 
 /**
@@ -9,4 +11,8 @@ import com.oscar.proyectoapptodo.Models.Weather;
 public interface IClimaDialogFragmentView {
     void setDataWheater(String message);
     void setDataWheater(Weather wheaterData);
+    void setLatitudeLongitude(Location location);
+
+    void showProgress();
+    void hideProgress();
 }

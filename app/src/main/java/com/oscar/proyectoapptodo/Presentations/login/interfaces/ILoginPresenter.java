@@ -15,7 +15,7 @@ public interface ILoginPresenter {
 
     void validateLogin(String email, String password);
     void registerNewUser(String email, String password);
-    void authListener();
+
     void onEventMainThread(ErrorData event);
     void onEventMainThread(SuccessData event);
 

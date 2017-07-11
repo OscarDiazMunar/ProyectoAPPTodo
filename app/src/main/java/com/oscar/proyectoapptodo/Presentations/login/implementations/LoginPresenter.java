@@ -5,8 +5,6 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.oscar.proyectoapptodo.AppController;
 import com.oscar.proyectoapptodo.Managers.VolleyManager;
@@ -28,8 +26,7 @@ import org.json.JSONObject;
 
 public class LoginPresenter implements ILoginPresenter {
     private LoginActivity loginActivity;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
+
     private ErrorData errorData = new ErrorData();
     private SuccessData successData = new SuccessData();
     private EventBus eventBus = EventBus.getDefault();
@@ -45,14 +42,12 @@ public class LoginPresenter implements ILoginPresenter {
 
     @Override
     public void onStart() {
-        auth.addAuthStateListener(authStateListener);
+
     }
 
     @Override
     public void onStop() {
-        if (authStateListener != null) {
-            auth.removeAuthStateListener(authStateListener);
-        }
+
     }
 
     @Override
@@ -68,23 +63,6 @@ public class LoginPresenter implements ILoginPresenter {
 
         String url = "https://uphill-leg.000webhostapp.com/proyectoapptodo/usuarios/login";
         AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(url, construirJsonObject(email, password)));
-        /*
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(loginActivity, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    successData.setType(Constants.successType.SUCCES_LOGIN_CONNECTION_USER);
-                    successData.setMessage(Constants.succesMessage.successLoginConnectionUser);
-                    eventBus.post(successData);
-                }else {
-                    errorData.setType(Constants.errorType.ERROR_LOGIN_CONNECTION_USER);
-                    //errorData.setMessage(loginActivity.getResources().getString(R.string.userError));
-                    errorData.setMessage(task.getException().getMessage());
-                    Log.e("task execption", task.getException().getMessage());
-                    eventBus.post(errorData);
-                }
-            }
-        });*/
     }
 
     @Override
@@ -94,44 +72,9 @@ public class LoginPresenter implements ILoginPresenter {
 
         String url = "https://uphill-leg.000webhostapp.com/proyectoapptodo/usuarios/registro";
         AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(url, construirJsonObject(email, password)));
-
-        /*
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(loginActivity, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    successData.setType(Constants.successType.SUCCES_LOGIN_CREATE_USER);
-                    successData.setMessage(Constants.succesMessage.successLoginCreateUser);
-                    eventBus.post(successData);
-                }else {
-                    errorData.setType(Constants.errorType.ERROR_LOGIN_CREATE_USER);
-                    errorData.setMessage(loginActivity.getResources().getString(R.string.userExist));
-                    eventBus.post(errorData);
-                }
-
-            }
-        });*/
     }
 
-    @Override
-    public void authListener() {
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                /*if (user != null){
-                    successData.setType(Constants.successType.SUCCES_LOGIN_CREATE_USER);
-                    successData.setMessage(Constants.succesMessage.SUCCES_LOGIN_CREATE_USER);
-                    eventBus.post(successData);
-                }else {
-                    errorData.setType(Constants.errorType.ERROR_LOGIN_CLOSE_SESSION);
-                    errorData.setMessage(loginActivity.getResources().getString(R.string.userExist));
-                    eventBus.post(errorData);
-                }*/
-            }
-        };
 
-    }
 
     @Override
     @Subscribe

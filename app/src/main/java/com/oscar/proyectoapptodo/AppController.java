@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.facebook.FacebookSdk;
 
 /**
  * Created by daniel on 14/06/2017.
@@ -24,6 +25,11 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        initFacebook();
+    }
+
+    private void initFacebook() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
     }
 
     public static synchronized AppController getInstance() {
@@ -55,4 +61,6 @@ public class AppController extends Application {
             mRequestQueue.cancelAll(tag);
         }
     }
+
+
 }

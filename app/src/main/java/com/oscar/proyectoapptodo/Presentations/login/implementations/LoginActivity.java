@@ -11,9 +11,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.oscar.proyectoapptodo.Presentations.MainTabActivity.implementations.MainTabActivity;
 import com.oscar.proyectoapptodo.Presentations.login.interfaces.ILoginView;
 import com.oscar.proyectoapptodo.R;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,8 +37,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
     Button btnRegitrarUsuario;
     @Bind(R.id.progressBarLogin)
     ProgressBar progressBarLogin;
+    @Bind(R.id.loginFacebook_button)
+    LoginButton loginFacebookButton;
 
     private LoginPresenter loginPresenter;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +53,31 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
         btnIniciarSesion.setOnClickListener(this);
 
         loginPresenter = new LoginPresenter(this);
-        loginPresenter.authListener();
         loginPresenter.onCreate();
+
+        callbackManager = CallbackManager.Factory.create();
+        loginFacebookButton.setPublishPermissions(Arrays.asList("publish_actions"));
+        loginFacebookInit();
+    }
+
+    private void loginFacebookInit() {
+        loginFacebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.e("facebook", "onSucces");
+                navigateToMainScreen();
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("facebook", "onCancel");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.e("facebook", "onError");
+            }
+        });
     }
 
     @Override
@@ -68,15 +101,15 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_iniciar_sesion:
-                if (loginPresenter.validateEmail(txtLoginEmail.getText().toString())&& loginPresenter.validatePassword(txtLoginPass.getText().toString())){
+                if (loginPresenter.validateEmail(txtLoginEmail.getText().toString()) && loginPresenter.validatePassword(txtLoginPass.getText().toString())) {
                     loginPresenter.validateLogin(txtLoginEmail.getText().toString(), txtLoginPass.getText().toString());
                 }
 
                 break;
             case R.id.btn_regitrar_usuario:
-                Log.e("boton registrar","aqui o");
+                Log.e("boton registrar", "aqui o");
                 if (loginPresenter.validateEmail(txtLoginEmail.getText().toString()) && loginPresenter.validatePassword(txtLoginPass.getText().toString())) {
                     loginPresenter.registerNewUser(txtLoginEmail.getText().toString(), txtLoginPass.getText().toString());
                 }
@@ -144,7 +177,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
         btnRegitrarUsuario.setEnabled(enable);
     }
 
-    void createDialogAlert(String message){
+    void createDialogAlert(String message) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setMessage(message);
         alertDialog.setPositiveButton(getResources().getString(R.string.btnNext), new DialogInterface.OnClickListener() {
@@ -155,4 +188,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
         }).show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 }

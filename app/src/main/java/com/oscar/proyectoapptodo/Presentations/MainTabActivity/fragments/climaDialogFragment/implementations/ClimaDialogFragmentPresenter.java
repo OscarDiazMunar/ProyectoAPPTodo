@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.oscar.proyectoapptodo.AppController;
+import com.oscar.proyectoapptodo.BuildConfig;
 import com.oscar.proyectoapptodo.Managers.MyLocationListener;
 import com.oscar.proyectoapptodo.Managers.VolleyManager;
 import com.oscar.proyectoapptodo.Models.ErrorData;
@@ -35,8 +38,6 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
     private Weather weather = new Weather();
     private Context context;
     private Activity activity;
-    private MyLocationListener myLocationListener;
-    private Location location;
     private LocationManager locationManager;
 
     public ClimaDialogFragmentPresenter(ClimaDialogFragment climaDialogFragment, Context context, Activity activity) {
@@ -48,12 +49,11 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
     @Override
     public void onCreateDialog() {
         eventBus.register(this);
-        myLocationListener = new MyLocationListener(context);
     }
 
     @Override
     public void onStart() {
-
+        climaDialogFragment.showProgress();
     }
 
     @Override
@@ -106,8 +106,8 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
 
                     if (locationManager != null) {
                         Log.e("location manager", "aqui estamos");
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0, myLocationListener);
-                        location = locationManager.getLastKnownLocation(provider_info);
+
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0, locationListener);
                     }
                 }
 
@@ -117,14 +117,9 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
         }
     }
 
-    @Override
-    public Location getLocation() {
-        return location;
-    }
-
     private void stopUsingGPS() {
         if (locationManager != null) {
-            locationManager.removeUpdates(myLocationListener);
+            locationManager.removeUpdates(locationListener);
         }
     }
 
@@ -139,14 +134,24 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
     public void onEventMainThread(SuccessData event) {
         weather =parseJsonWeather(event.getMessage());
         //climaDialogFragment.setDataWheater(weather.toString());
+        climaDialogFragment.hideProgress();
         climaDialogFragment.setDataWheater(weather);
 
     }
 
     @Override
     public void consumeWebServiceWeather(String longitud, String latitud) {
-        String url = "http://api.openweathermap.org/data/2.5/weather?lat="+latitud+"&lon="+longitud+"&appid=072ede38bdcd58804ca961ad3104bae8";
+        String url = "http://api.openweathermap.org/data/2.5/weather?lat="+latitud+"&lon="+longitud+"&appid="+BuildConfig.openweathermap_id;
+
         Log.e("consumeweb", url);
+        AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJson(url));
+    }
+
+    @Override
+    public void consumeWebServiceWeather(Double longitud, Double latitud) {
+        String url = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid="+BuildConfig.openweathermap_id;
+        url = String.format(url, latitud,longitud);
+        Log.e("url", url);
         AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJson(url));
     }
 
@@ -170,4 +175,26 @@ public class ClimaDialogFragmentPresenter implements IClimaDialogFragmentPresent
         }
         return weather;
     }
+
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            climaDialogFragment.setLatitudeLongitude(location);
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
 }

@@ -1,8 +1,12 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    mavenCentral()
+}
+
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.oscar.proyectoapptodo"
         minSdkVersion 19
@@ -15,7 +19,17 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            resValue "string", "facebook_app_id", project.property('facebook_app_id')
+            buildConfigField "String", "openweathermap_id", project.property('openweathermap_id')
         }
+
+        debug {
+            resValue "string", "facebook_app_id", project.property('facebook_app_id')
+            buildConfigField "String", "openweathermap_id", project.property('openweathermap_id')
+        }
+
+
     }
 }
 
@@ -25,19 +39,18 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:26.+'
+    compile 'com.android.support:design:25.3.1'
 
-
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
-    compile 'com.google.firebase:firebase-core:9.6.1'
-    compile 'com.google.firebase:firebase-auth:9.6.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:cardview-v7:26.+'
+    compile 'com.android.support:cardview-v7:25.3.1'
+
 }
 apply plugin: 'com.google.gms.google-services'

@@ -22,4 +22,5 @@
 
     <!-- ClimaDialogFragment -->
     <string name="dialogFragment_ciudad">El clima de tu ciudad %1$s</string>
+
 </resources>
