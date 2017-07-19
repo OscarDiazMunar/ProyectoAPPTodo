@@ -1,39 +1,62 @@
 package com.oscar.proyectoapptodo.Presentations.MainTabActivity.implementations;
 
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout;
 import com.oscar.proyectoapptodo.Presentations.MainTabActivity.fragments.climaDialogFragment.implementations.ClimaDialogFragment;
+import com.oscar.proyectoapptodo.Presentations.MainTabActivity.fragments.youtubeFragment.implementations.YoutubeFragment;
 import com.oscar.proyectoapptodo.R;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class MainTabActivity extends AppCompatActivity {
 
+    @Bind(R.id.imgYoutube)
+    ImageView imgYoutube;
+    @Bind(R.id.imgCamera)
+    ImageView imgCamera;
+    @Bind(R.id.imgPhone)
+    ImageView imgPhone;
+    @Bind(R.id.fabtoolbar)
+    FABToolbarLayout fabtoolbar;
+    @Bind(R.id.main_content)
+    CoordinatorLayout mainContent;
+    @Bind(R.id.fragment_container)
+    RelativeLayout fragmentContainer;
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every
      * loaded fragment in memory. If this becomes too memory intensive, it
      * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * {@link FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
+    private YoutubeFragment youtubeFragment;
+    private FragmentTransaction transaction;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -45,6 +68,7 @@ public class MainTabActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
+        ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,8 +87,10 @@ public class MainTabActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabtoolbar.show();
+                /*
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Action", null).show();*/
             }
         });
 
@@ -88,6 +114,19 @@ public class MainTabActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        fabtoolbar.hide();
+        youtubeFragment.onDestroyView();
+        youtubeFragment.onDestroy();
+        youtubeFragment.onDetach();
+        transaction.remove(youtubeFragment);
+        transaction.hide(youtubeFragment);
+        //transaction.commit();
+        fragmentContainer.setVisibility(View.GONE);
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_tab, menu);
@@ -101,7 +140,7 @@ public class MainTabActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
 
         //noinspection SimplifiableIfStatement
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.closeSesion:
                 mainTabPresenter.closeSession();
                 return true;
@@ -121,6 +160,29 @@ public class MainTabActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick({R.id.imgYoutube, R.id.imgCamera, R.id.imgPhone})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.imgYoutube:
+                cargarYoutube();
+                break;
+            case R.id.imgCamera:
+                break;
+            case R.id.imgPhone:
+                break;
+        }
+    }
+
+    private void cargarYoutube() {
+        fragmentContainer.setVisibility(View.VISIBLE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        transaction = fragmentManager.beginTransaction();
+        youtubeFragment = new YoutubeFragment();
+        transaction.add(R.id.fragment_container, youtubeFragment);
+        transaction.commit();
+
     }
 
     /**
