@@ -9,6 +9,7 @@ import com.oscar.proyectoapptodo.Managers.VolleyManager;
 import com.oscar.proyectoapptodo.Models.ErrorData;
 import com.oscar.proyectoapptodo.Models.SuccessData;
 import com.oscar.proyectoapptodo.Presentations.MainTabActivity.interfaces.IMainTabPresenter;
+import com.oscar.proyectoapptodo.Presentations.MainTabActivity.interfaces.IMainTabView;
 import com.oscar.proyectoapptodo.Presentations.login.implementations.LoginActivity;
 import com.oscar.proyectoapptodo.Utils.Constants;
 
@@ -21,12 +22,14 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class MainTabPresenter implements IMainTabPresenter {
     MainTabActivity mainTabActivity;
+    private IMainTabView youTubeFragmentView;
     //FirebaseAuth auth = FirebaseAuth.getInstance();
     EventBus eventBus = EventBus.getDefault();
 
 
     public MainTabPresenter(MainTabActivity mainTabActivity) {
         this.mainTabActivity = mainTabActivity;
+        youTubeFragmentView = mainTabActivity;
     }
 
     @Override
@@ -71,6 +74,15 @@ public class MainTabPresenter implements IMainTabPresenter {
 
                 break;
             default:
+        }
+    }
+
+    @Override
+    public void dismissFragment(Boolean toSide) {
+        if (toSide){
+            youTubeFragmentView.dismissAnimationRigth();
+        }else {
+            youTubeFragmentView.dismissAnimationLeft();
         }
     }
 

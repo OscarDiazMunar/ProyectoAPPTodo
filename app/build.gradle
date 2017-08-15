@@ -22,11 +22,15 @@ android {
 
             resValue "string", "facebook_app_id", project.property('facebook_app_id')
             buildConfigField "String", "openweathermap_id", project.property('openweathermap_id')
+            buildConfigField "String", "host_login", project.property('host_login')
+            buildConfigField "String", "host_registro", project.property('host_registro')
         }
 
         debug {
             resValue "string", "facebook_app_id", project.property('facebook_app_id')
             buildConfigField "String", "openweathermap_id", project.property('openweathermap_id')
+            buildConfigField "String", "host_login", project.property('host_login')
+            buildConfigField "String", "host_registro", project.property('host_registro')
         }
 
 

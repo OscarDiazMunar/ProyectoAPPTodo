@@ -18,4 +18,6 @@ public interface IMainTabPresenter {
 
     void closeSession();
     void consumeWebService(String url, int typeResponse);
+
+    void dismissFragment(Boolean toSide);
 }

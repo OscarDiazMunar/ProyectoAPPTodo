@@ -5,4 +5,7 @@ package com.oscar.proyectoapptodo.Presentations.MainTabActivity.interfaces;
  */
 
 public interface IMainTabView {
+    void dismissAnimationLeft();
+    void dismissAnimationRigth();
 }
+

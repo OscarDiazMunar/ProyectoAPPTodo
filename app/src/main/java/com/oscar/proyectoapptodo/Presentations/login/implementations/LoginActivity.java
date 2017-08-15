@@ -109,7 +109,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
 
                 break;
             case R.id.btn_regitrar_usuario:
-                Log.e("boton registrar", "aqui o");
                 if (loginPresenter.validateEmail(txtLoginEmail.getText().toString()) && loginPresenter.validatePassword(txtLoginPass.getText().toString())) {
                     loginPresenter.registerNewUser(txtLoginEmail.getText().toString(), txtLoginPass.getText().toString());
                 }

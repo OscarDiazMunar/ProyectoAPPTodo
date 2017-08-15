@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.oscar.proyectoapptodo.AppController;
+import com.oscar.proyectoapptodo.BuildConfig;
 import com.oscar.proyectoapptodo.Managers.VolleyManager;
 import com.oscar.proyectoapptodo.Models.ErrorData;
 import com.oscar.proyectoapptodo.Models.SuccessData;
@@ -61,8 +62,7 @@ public class LoginPresenter implements ILoginPresenter {
         loginActivity.disableInputs();
         loginActivity.showProgress();
 
-        String url = "https://uphill-leg.000webhostapp.com/proyectoapptodo/usuarios/login";
-        AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(url, construirJsonObject(email, password)));
+        AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(BuildConfig.host_login, construirJsonObject(email, password)));
     }
 
     @Override
@@ -70,8 +70,7 @@ public class LoginPresenter implements ILoginPresenter {
         loginActivity.disableInputs();
         loginActivity.showProgress();
 
-        String url = "https://uphill-leg.000webhostapp.com/proyectoapptodo/usuarios/registro";
-        AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(url, construirJsonObject(email, password)));
+        AppController.getInstance().addToRequestQueue(VolleyManager.makeRequestJsonPOST(BuildConfig.host_registro, construirJsonObject(email, password)));
     }
 
 

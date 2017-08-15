@@ -89,7 +89,7 @@ public final class VolleyManager {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Error login", "massimo");
+                        Log.e("Error activity_login", "massimo");
 
                         errorData.setType(Constants.errorType.ERROR_LOGIN_CREATE_USER);
                         errorData.setMessage(error.toString());

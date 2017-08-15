@@ -19,11 +19,17 @@
     <!-- MainTabActivity -->
     <string name="close_sesion">Cerrar sesión</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="tab1">Mis datos</string>
+    <string name="uri_resources">android.resource://com.oscar.proyectoapptodo/</string>
 
     <!-- ClimaDialogFragment -->
     <string name="dialogFragment_ciudad">El clima de tu ciudad %1$s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- WebYoutubeActivity -->
+    <string name="link_video">https://www.youtube.com/watch?v=tH2w6Oxx0kQ</string>
+
 
 </resources>

@@ -1,5 +1,8 @@
 package com.oscar.proyectoapptodo.Presentations.MainTabActivity.implementations;
 
+import android.content.Intent;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,18 +16,27 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout;
+import com.oscar.proyectoapptodo.MainActivity;
 import com.oscar.proyectoapptodo.Presentations.MainTabActivity.fragments.climaDialogFragment.implementations.ClimaDialogFragment;
-import com.oscar.proyectoapptodo.Presentations.MainTabActivity.fragments.youtubeFragment.implementations.YoutubeFragment;
+import com.oscar.proyectoapptodo.Presentations.MainTabActivity.GestureDetector.SwipeGestureDetector;
+import com.oscar.proyectoapptodo.Presentations.MainTabActivity.GestureDetector.SwipeGestureListener;
+import com.oscar.proyectoapptodo.Presentations.MainTabActivity.interfaces.IMainTabView;
+import com.oscar.proyectoapptodo.Presentations.WebYoutube.Implementations.WebYoutubeActivity;
 import com.oscar.proyectoapptodo.R;
 
 import butterknife.Bind;
@@ -32,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainTabActivity extends AppCompatActivity {
+public class MainTabActivity extends AppCompatActivity implements IMainTabView, SwipeGestureListener {
 
     @Bind(R.id.imgYoutube)
     ImageView imgYoutube;
@@ -44,8 +56,9 @@ public class MainTabActivity extends AppCompatActivity {
     FABToolbarLayout fabtoolbar;
     @Bind(R.id.main_content)
     CoordinatorLayout mainContent;
-    @Bind(R.id.fragment_container)
-    RelativeLayout fragmentContainer;
+    @Bind(R.id.videoView)
+    VideoView videoView;
+
     /**
      * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -55,7 +68,6 @@ public class MainTabActivity extends AppCompatActivity {
      * {@link FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private YoutubeFragment youtubeFragment;
     private FragmentTransaction transaction;
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -63,6 +75,8 @@ public class MainTabActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private MainTabPresenter mainTabPresenter;
+    private MediaController mediaController;
+    private Resources res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,11 +108,11 @@ public class MainTabActivity extends AppCompatActivity {
             }
         });
 
-
+        res = getResources();
         mainTabPresenter = new MainTabPresenter(this);
         mainTabPresenter.onCreate();
 
-
+        setupGestureDetection();
     }
 
     @Override
@@ -116,14 +130,9 @@ public class MainTabActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         fabtoolbar.hide();
-        youtubeFragment.onDestroyView();
-        youtubeFragment.onDestroy();
-        youtubeFragment.onDetach();
-        transaction.remove(youtubeFragment);
-        transaction.hide(youtubeFragment);
-        //transaction.commit();
-        fragmentContainer.setVisibility(View.GONE);
-
+        videoView.clearFocus();
+        videoView.stopPlayback();
+        videoView.setVisibility(View.GONE);
     }
 
     @Override
@@ -145,15 +154,6 @@ public class MainTabActivity extends AppCompatActivity {
                 mainTabPresenter.closeSession();
                 return true;
             case R.id.clima:
-                /*JsonObjectRequest jsonObjectRequest = VolleyManager.makeRequestJson("http://api.openweathermap.org/data/2.5/weather?q=medellin&appid=072ede38bdcd58804ca961ad3104bae8");
-                AppController.getInstance().addToRequestQueue(jsonObjectRequest);*/
-
-                /*StringRequest jsonObjectRequest = VolleyManager.makeRequestString("http://api.openweathermap.org/data/2.5/weather?q=medellin&appid=072ede38bdcd58804ca961ad3104bae8");
-                AppController.getInstance().addToRequestQueue(jsonObjectRequest);*/
-
-                /*mainTabPresenter.consumeWebService("http://api.openweathermap.org/data/2.5/weather?q=medellin&appid=072ede38bdcd58804ca961ad3104bae8",
-                        Constants.typeResponseWebService.TYPE_XML);*/
-
                 new ClimaDialogFragment().show(getFragmentManager(), "ClimaDialog");
                 return true;
             default:
@@ -166,25 +166,79 @@ public class MainTabActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imgYoutube:
-                cargarYoutube();
+                cargarVideo();
                 break;
             case R.id.imgCamera:
+
                 break;
             case R.id.imgPhone:
                 break;
         }
     }
 
-    private void cargarYoutube() {
-        fragmentContainer.setVisibility(View.VISIBLE);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        transaction = fragmentManager.beginTransaction();
-        youtubeFragment = new YoutubeFragment();
-        transaction.add(R.id.fragment_container, youtubeFragment);
-        transaction.commit();
+    private void cargarVideo() {
+        Uri path = Uri.parse(res.getString(R.string.uri_resources) + R.raw.kansas_dust_in_the_wind);
+        videoView.setVisibility(View.VISIBLE);
+        videoView.setVideoURI(path);
+        mediaController = new MediaController(this);
+        videoView.setMediaController(mediaController);
+        mediaController.setAnchorView(videoView);
+        videoView.start();
 
     }
 
+    @Override
+    public void dismissAnimationLeft() {
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_dismiss_left);
+        animation.setAnimationListener(getAnimationListener());
+        videoView.setAnimation(animation);
+        videoView.startAnimation(animation);
+    }
+
+    @Override
+    public void dismissAnimationRigth() {
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_dismiss_rigth);
+        animation.setAnimationListener(getAnimationListener());
+        videoView.setAnimation(animation);
+        videoView.startAnimation(animation);
+    }
+
+    private Animation.AnimationListener getAnimationListener() {
+        return new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                videoView.stopPlayback();
+                videoView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+
+    }
+
+    @Override
+    public void dismissYoutube(boolean toSide) {
+        if (toSide) {
+            mainTabPresenter.dismissFragment(toSide);
+        } else {
+            mainTabPresenter.dismissFragment(toSide);
+        }
+    }
+
+    @Override
+    public void navigateToYotube() {
+        videoView.stopPlayback();
+        videoView.setVisibility(View.GONE);
+        startActivity(new Intent(this, WebYoutubeActivity.class));
+    }
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -234,6 +288,17 @@ public class MainTabActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            switch (position) {
+                case 0:
+                    //return new YoutubeFragment();
+                    //break;
+                case 1:
+
+                    break;
+                case 2:
+
+                    break;
+            }
             return PlaceholderFragment.newInstance(position + 1);
         }
 
@@ -255,5 +320,17 @@ public class MainTabActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    private void setupGestureDetection() {
+        final GestureDetector gestureDetector = new GestureDetector(this, new SwipeGestureDetector(this));
+
+        View.OnTouchListener gestureOnTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        };
+        videoView.setOnTouchListener(gestureOnTouchListener);
     }
 }
